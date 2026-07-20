@@ -182,6 +182,24 @@ int main()
         cout << "Couldn't create output file.\n";
         return 1;
     }
+    int uniqueCharacters = character_frequency.size();
+
+    compressedFile.write(reinterpret_cast<char *>(&uniqueCharacters),
+                         sizeof(uniqueCharacters));
+
+    for (auto pair : character_frequency)
+    {
+        compressedFile.write(&pair.first, sizeof(char));
+
+        compressedFile.write(reinterpret_cast<char *>(&pair.second),
+                             sizeof(int));
+    }
+    int paddingBits = 0;
+
+    streampos paddingPosition = compressedFile.tellp();
+
+    compressedFile.write(reinterpret_cast<char *>(&paddingBits),
+                         sizeof(paddingBits));
 
     file.close();
     file = readFile(filename);
@@ -218,9 +236,20 @@ int main()
 
     if (bitCount > 0)
     {
-        buffer <<= (8 - bitCount);
+        paddingBits = 8 - bitCount;
+
+        buffer <<= paddingBits;
+
         compressedFile.put(buffer);
     }
+    else
+    {
+        paddingBits = 0;
+    }
+    compressedFile.seekp(paddingPosition);
+
+    compressedFile.write(reinterpret_cast<char *>(&paddingBits),
+                         sizeof(paddingBits));
 
     compressedFile.close();
     file.close();
