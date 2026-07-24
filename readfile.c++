@@ -47,11 +47,39 @@ void minHeaping(vector<Node *> &heap)
 
             int smallest = current;
 
-            if (left < n && heap[left]->freq < heap[smallest]->freq)
-                smallest = left;
+            
+            if (left < n)
+            {
+                if (heap[left]->freq < heap[smallest]->freq)
+                {
+                    smallest = left;
+                }
+                else if (heap[left]->freq == heap[smallest]->freq)
+                {
+                    
+                    if (heap[left]->character < heap[smallest]->character)
+                    {
+                        smallest = left;
+                    }
+                }
+            }
 
-            if (right < n && heap[right]->freq < heap[smallest]->freq)
-                smallest = right;
+            
+            if (right < n)
+            {
+                if (heap[right]->freq < heap[smallest]->freq)
+                {
+                    smallest = right;
+                }
+                else if (heap[right]->freq == heap[smallest]->freq)
+                {
+                    
+                    if (heap[right]->character < heap[smallest]->character)
+                    {
+                        smallest = right;
+                    }
+                }
+            }
 
             if (smallest == current)
                 break;
